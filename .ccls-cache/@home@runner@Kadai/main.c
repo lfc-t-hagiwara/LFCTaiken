@@ -54,7 +54,7 @@ int main() {
       waitclear();
       break;
     case 9:
-      return;
+      return 0;
     default:
       printf(MSG_ME1);
       waitclear();
@@ -85,5 +85,5 @@ void delete () {}
 void waitclear() {
   printf("続行するにはキーを入力してください...");
   int _ = getchar();
-  system("cls");
+  printf("\033[0;0H\033[2J");
 }

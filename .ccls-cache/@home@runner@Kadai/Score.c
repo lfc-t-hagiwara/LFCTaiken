@@ -16,28 +16,13 @@ void load_scores(scorearray_t scores) {
 }
 
 void save_scores(scorearray_t scores) {
-  FILE *fp;
-  errno_t error;
-  error = fopen_s(&fp, "score.csv", "w");
-  if (error != 0) {
-    printf("scoreファイルが開けませんでした。");
-    return;
-  }
-
-  fprintf(fp, "%d", nextid);
-
-  FOREACHSCORES(scores, i) {
-    fprintf(fp, "%d,%d,%s", scores[i].id, scores[i].value, scores[i].name);
-  }
-
-  fclose(fp);
 }
 
 void print_scores(scorearray_t scores) {
-  printf_s("%s", "    ----------スコア表----------\n");
-  printf_s("%12s%12s%12s\n", "ID", "VALUE", "NAME");
+  printf("%s", "    ----------スコア表----------\n");
+  printf("%12s%12s%12s\n", "ID", "VALUE", "NAME");
   FOREACHSCORES(scores, i) {
-    printf_s("%12d%12d%12s\n", scores[i].id, scores[i].value, scores[i].name);
+    printf("%12d%12d%12s\n", scores[i].id, scores[i].value, scores[i].name);
   }
 }
 
@@ -48,10 +33,10 @@ typedef struct {
   int num;
   double ave;
 } aggregating_t;
-int compmax(void *z, const void *x, const void *y) {
+int compmax(const void *x, const void *y) {
   return (*(aggregating_t *)y).max - (*(aggregating_t *)x).max;
 }
-int compave(void *z, const void *x, const void *y) {
+int compave(const void *x, const void *y) {
   return (*(aggregating_t *)y).ave - (*(aggregating_t *)x).ave;
 }
 void print_aggregatedscores(scorearray_t scores) {
@@ -65,7 +50,7 @@ void print_aggregatedscores(scorearray_t scores) {
   FOREACHSCORES(scores, i) {
     for (j = 0; j < size_scorearray; j++) {
       if (a[j].name[0] == '\0') {
-        strcpy_s(a[j].name, sizeof(scores[i].name), scores[i].name);
+        strcpy(a[j].name, scores[i].name);
         break;
       } else if (strcmp(a[j].name, scores[i].name) == 0) {
         break;
@@ -86,24 +71,24 @@ void print_aggregatedscores(scorearray_t scores) {
     a[j].ave = (double)a[j].sum / a[j].num;
   }
 
-  qsort_s((void *)a, size_scorearray, sizeof(aggregating_t), compmax, a);
+  qsort((void *)a, size_scorearray, sizeof(aggregating_t), compmax);
 
-  printf_s("%s", "    ---最高得点表---\n");
-  printf_s("%12s%12s\n", "VALUE", "NAME");
+  printf("%s", "    ---最高得点表---\n");
+  printf("%12s%12s\n", "VALUE", "NAME");
   for (j = 0; j < size_scorearray; j++) {
     if (a[j].name[0] == '\0')
       break;
-    printf_s("%12d%12s\n", a[j].max, a[j].name);
+    printf("%12d%12s\n", a[j].max, a[j].name);
   }
 
-  qsort_s((void *)a, size_scorearray, sizeof(aggregating_t), compave, a);
+  qsort((void *)a, size_scorearray, sizeof(aggregating_t), compave);
 
-  printf_s("%s", "    ---平均得点表---\n");
-  printf_s("%12s%12s\n", "VALUE", "NAME");
+  printf("%s", "    ---平均得点表---\n");
+  printf("%12s%12s\n", "VALUE", "NAME");
   for (j = 0; j < size_scorearray; j++) {
     if (a[j].name[0] == '\0')
       break;
-    printf_s("%12.2f%12s\n", a[j].ave, a[j].name);
+    printf("%12.2f%12s\n", a[j].ave, a[j].name);
   }
 }
 
@@ -116,7 +101,7 @@ void append_score(scorearray_t scores, int value, name_t name) {
   if (i < size_scorearray) {
     scores[i].id = nextid++;
     scores[i].value = value;
-    strcpy(scores[i].name, size_namemax, name);
+    strcpy(scores[i].name, name);
   }
 }
 
@@ -131,7 +116,7 @@ void edit_scorevalue(scorearray_t scores, int id, int value) {
 void edit_scorename(scorearray_t scores, int id, name_t name) {
   for (size_t i = 0; i < size_scorearray; i++) {
     if (scores[i].id == id) {
-      strcpy(scores[i].name, size_namemax, name);
+      strcpy(scores[i].name, name);
     }
   }
 }
@@ -145,7 +130,7 @@ void delete_score(scorearray_t scores, int id) {
     } else if (afterdelete) {
       scores[i - 1].id = scores[i].id;
       scores[i - 1].value = scores[i].value;
-      strcpy_s(scores[i - 1].name, size_namemax, scores[i].name);
+      strcpy(scores[i - 1].name, scores[i].name);
     }
   }
 }

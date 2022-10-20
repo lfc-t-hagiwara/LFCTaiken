@@ -13,11 +13,11 @@ int getintinput(const char* message, const char* errormessage)
 	int value = -1;
 	while (value < 1)
 	{
-		printf(message);
+		printf("%s", message);
 		printf("> ");
 		if (fgeti(&value, stdin) == EOF || value < 1)
 		{
-			printf(errormessage);
+			printf("%s", errormessage);
 		}
 	}
 	return value;
@@ -28,12 +28,12 @@ void getnameinput(const char* message, const char* errormessage, name_t name)
 	name[0] = '\0';
 	while (name[0] == '\0')
 	{
-		printf(message);
+		printf("%s", message);
 		printf("> ");
 		fgets(name, size_namemax, stdin);
 		if (name[0] == '\0')
 		{
-			printf(errormessage);
+			printf("%s", errormessage);
 		}
 	}
 	char* p = strchr(name, '\n');
