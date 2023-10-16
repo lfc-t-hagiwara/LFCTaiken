@@ -11,11 +11,54 @@
 int nextid = 1;
 
 void load_scores(scorearray_t scores) {
-  int i;
-  FOREACHSCORES(scores, i) { scores[i].id = 0; }
+  char line[LINE_MAX];
+  int i = 0;
+  char *spl;
+  char *context = NULL;
+  FILE *fp;
+  fp = fopen("Score.csv", "r");
+  if (fp == NULL) {
+    printf("scoreファイルが開けませんでした。");
+    return;
+  }
+
+  if (fgets(line, LINE_MAX, fp) != NULL) {
+    nextid = atoi(line);
+  }
+
+  while (fgets(line, LINE_MAX, fp) != NULL && i < size_scorearray) {
+    spl = strtok(line, DEM);
+    scores[i].id = atoi(spl);
+    spl = strtok(NULL, DEM);
+    scores[i].value = atoi(spl);
+    spl = strtok(NULL, DEM);
+    strcpy(scores[i].name, spl);
+    i++;
+  }
+
+  fclose(fp);
+
+  while (i < size_scorearray) {
+    scores[i].id = 0;
+    i++;
+  }
 }
 
 void save_scores(scorearray_t scores) {
+  FILE *fp;
+  fp = fopen("Score.csv", "w");
+  if (fp == NULL) {
+    printf("scoreファイルが開けませんでした。");
+    return;
+  }
+
+  fprintf(fp, "%d\n", nextid);
+
+  FOREACHSCORES(scores, i) {
+    fprintf(fp, "%d,%d,%s\n", scores[i].id, scores[i].value, scores[i].name);
+  }
+
+  fclose(fp);
 }
 
 void print_scores(scorearray_t scores) {

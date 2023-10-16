@@ -1,3 +1,12 @@
 {
-  "files": {}
+  "files": {
+    "Score.c": [
+      {
+        "id": "68ad7f23-2442-405c-bcde-3047df69e29d",
+        "line": 48,
+        "version": 207,
+        "index": 961
+      }
+    ]
+  }
 }

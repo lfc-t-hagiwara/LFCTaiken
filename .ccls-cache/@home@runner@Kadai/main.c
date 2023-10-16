@@ -76,6 +76,7 @@ void add() {
   value = getintinput(MSG_AM1, MSG_AE1);
   getnameinput(MSG_AM2, MSG_AM2, name);
   append_score(scores, value, name);
+  save_scores(scores);
 }
 
 void edit() {}
